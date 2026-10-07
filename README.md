@@ -8,9 +8,9 @@ Sistema web para uma loja de **consoles, jogos e peças/acessórios de videogame
 
 | | |
 |---|---|
-| **Integrante** | _[Seu nome completo]_ |
-| **Disciplina** | _[Nome da disciplina]_ |
-| **Professor(a)** | _[Nome do professor]_ |
+| **Integrante** | Ryan Porto Antunes |
+| **Disciplina** | Projeto de Banco de Dados |
+| **Professor** | Anderson Soares |
 | **Instituição** | UNIFSA — Centro Universitário Santo Agostinho |
 
 ---
