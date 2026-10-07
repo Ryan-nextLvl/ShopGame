@@ -3,159 +3,380 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ShopGame — Loja de Games</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
+  <title>ShopGame — Gestão de Loja de Games</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%237c5cff%22/><path d=%22M10 13h4M12 11v4M19 13h.01M21 15h.01%22 stroke=%22white%22 stroke-width=%222%22 stroke-linecap=%22round%22/><path d=%22M9 9h14a3 3 0 0 1 3 3l1 7a2.5 2.5 0 0 1-4.3 1.7L21 19h-10l-1.7 1.7A2.5 2.5 0 0 1 5 19l1-7a3 3 0 0 1 3-3z%22 fill=%22none%22 stroke=%22white%22 stroke-width=%221.6%22/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="topo">
-    <div class="marca">🎮 <strong>Shop</strong>Game</div>
-    <nav id="menu">
-      <button data-tela="dashboard" class="ativo">Dashboard</button>
-      <button data-tela="venda">Nova Venda</button>
-      <button data-tela="relatorio">Relatório de Vendas</button>
-      <button data-tela="produtos">Produtos &amp; Estoque</button>
-      <button data-tela="clientes">Clientes</button>
-    </nav>
-  </header>
+  <!-- ============ Ícones (estilo Lucide) ============ -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></symbol>
+      <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></symbol>
+      <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8M16 17H8M10 9H8"/></symbol>
+      <symbol id="i-box" viewBox="0 0 24 24"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.7 4.73a2 2 0 0 0 2 0L20.7 7"/><path d="m7.5 4.27 9 5.15"/></symbol>
+      <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></symbol>
+      <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="M21.17 6.81a1 1 0 0 0-3.99-3.99L3.84 16.17a2 2 0 0 0-.5.83l-1.32 4.35a.5.5 0 0 0 .62.62l4.35-1.32a2 2 0 0 0 .83-.5z"/></symbol>
+      <symbol id="i-in" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></symbol>
+      <symbol id="i-out" viewBox="0 0 24 24"><path d="m5 12 7-7 7 7M12 19V5"/></symbol>
+      <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+      <symbol id="i-gamepad" viewBox="0 0 24 24"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59C2.6 9.42 2 14.46 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.41-1.41A2 2 0 0 1 9.83 16h4.34a2 2 0 0 1 1.42.59L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.55-.6-6.58-.69-7.26A4 4 0 0 0 17.32 5z"/></symbol>
+      <symbol id="i-tv" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="m17 2-5 5-5-5"/></symbol>
+      <symbol id="i-disc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="2"/></symbol>
+      <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2"/></symbol>
+      <symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol>
+      <symbol id="i-pix" viewBox="0 0 24 24"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3M21 21v.01M12 7v3a2 2 0 0 1-2 2H7M3 12h.01M12 3h.01M12 16v.01M16 12h1M21 12v.01M12 21v-1"/></symbol>
+      <symbol id="i-cash" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></symbol>
+      <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/></symbol>
+      <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></symbol>
+      <symbol id="i-up" viewBox="0 0 24 24"><path d="M22 7 13.5 15.5l-5-5L2 17"/><path d="M16 7h6v6"/></symbol>
+      <symbol id="i-down" viewBox="0 0 24 24"><path d="M22 17 13.5 8.5l-5 5L2 7"/><path d="M16 17h6v-6"/></symbol>
+      <symbol id="i-crown" viewBox="0 0 24 24"><path d="M11.56 3.27a.5.5 0 0 1 .88 0l2.95 5.6a1 1 0 0 0 1.52.3l4.27-3.67a.5.5 0 0 1 .8.52l-2.83 10.25a1 1 0 0 1-.96.73H5.81a1 1 0 0 1-.96-.73L2.02 6.02a.5.5 0 0 1 .8-.52l4.27 3.67a1 1 0 0 0 1.52-.3z"/><path d="M5 21h14"/></symbol>
+      <symbol id="i-dollar" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></symbol>
+      <symbol id="i-tag" viewBox="0 0 24 24"><path d="M12.59 2.59A2 2 0 0 0 11.17 2H4a2 2 0 0 0-2 2v7.17a2 2 0 0 0 .59 1.42l8.7 8.7a2.43 2.43 0 0 0 3.42 0l6.58-6.58a2.43 2.43 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5"/></symbol>
+      <symbol id="i-percent" viewBox="0 0 24 24"><path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></symbol>
+      <symbol id="i-truck" viewBox="0 0 24 24"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2M15 18H9M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></symbol>
+      <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></symbol>
+    </defs>
+  </svg>
 
-  <main>
-    <!-- ================= DASHBOARD ================= -->
-    <section id="tela-dashboard" class="tela ativa">
-      <div class="titulo-tela">
-        <h1>Dashboard</h1>
-        <span class="recurso view">VIEW vw_relatorio_vendas + vw_produtos_estoque</span>
+  <div class="app">
+    <!-- ============ Sidebar ============ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark"><svg class="i"><use href="#i-gamepad"/></svg></div>
+        <div>
+          <div class="brand-name">Shop<span>Game</span></div>
+          <div class="brand-sub">Gestão de Loja</div>
+        </div>
       </div>
-      <div class="cards" id="dash-cards"></div>
-      <div class="grade-2">
-        <div class="painel"><h2>Mais vendidos</h2><table id="dash-top"></table></div>
-        <div class="painel"><h2>⚠ Alertas de estoque</h2><table id="dash-alertas"></table></div>
-        <div class="painel"><h2>Por categoria</h2><table id="dash-categorias"></table></div>
-        <div class="painel"><h2>Últimas vendas</h2><table id="dash-ultimas"></table></div>
-      </div>
-    </section>
 
-    <!-- ================= NOVA VENDA ================= -->
-    <section id="tela-venda" class="tela">
-      <div class="titulo-tela">
-        <h1>Nova Venda</h1>
-        <span class="recurso proc">PROCEDURE sp_realizar_venda</span>
-        <span class="recurso func">FUNCTION fn_calcular_desconto</span>
+      <nav id="menu">
+        <div class="nav-label">Visão geral</div>
+        <button data-tela="dashboard" class="ativo"><svg class="i"><use href="#i-grid"/></svg>Dashboard</button>
+        <div class="nav-label">Operação</div>
+        <button data-tela="venda"><svg class="i"><use href="#i-cart"/></svg>Nova Venda<kbd>PDV</kbd></button>
+        <button data-tela="relatorio"><svg class="i"><use href="#i-file"/></svg>Relatório de Vendas</button>
+        <div class="nav-label">Cadastros</div>
+        <button data-tela="produtos"><svg class="i"><use href="#i-box"/></svg>Produtos &amp; Estoque<span class="nav-badge" id="nav-alertas" hidden></span></button>
+        <button data-tela="clientes"><svg class="i"><use href="#i-users"/></svg>Clientes</button>
+      </nav>
+
+      <div class="sidebar-card">
+        <svg class="i"><use href="#i-db"/></svg>
+        <div>
+          <strong>PostgreSQL</strong>
+          <span>Views · Functions · Procedures</span>
+        </div>
       </div>
-      <div class="grade-venda">
-        <div class="painel">
-          <h2>Produtos</h2>
-          <div class="filtros">
-            <input id="venda-busca" placeholder="Buscar produto ou plataforma...">
-            <select id="venda-categoria"><option value="">Todas as categorias</option></select>
+
+      <div class="user">
+        <div class="avatar" style="--h:262">RA</div>
+        <div>
+          <strong>Ryan Porto Antunes</strong>
+          <span>Gerente da loja</span>
+        </div>
+      </div>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <!-- ============ Conteúdo ============ -->
+    <div class="main">
+      <header class="topbar">
+        <button class="icon-btn menu-btn" id="menu-btn" aria-label="Abrir menu"><svg class="i"><use href="#i-menu"/></svg></button>
+        <div class="crumbs"><span>ShopGame</span><svg class="i"><use href="#i-arrow"/></svg><strong id="crumb-atual">Dashboard</strong></div>
+        <div class="topbar-right">
+          <div class="today"><svg class="i"><use href="#i-calendar"/></svg><span id="hoje"></span></div>
+          <button class="btn primary" data-ir="venda"><svg class="i"><use href="#i-plus"/></svg>Nova venda</button>
+        </div>
+      </header>
+
+      <main>
+        <!-- ================= DASHBOARD ================= -->
+        <section id="tela-dashboard" class="tela ativa">
+          <div class="page-head">
+            <div>
+              <h1 id="saudacao">Dashboard</h1>
+              <p>Visão consolidada de vendas, estoque e clientes da loja.</p>
+            </div>
+            <div class="db-chips">
+              <span class="db-chip view"><svg class="i"><use href="#i-db"/></svg>VIEW vw_relatorio_vendas</span>
+              <span class="db-chip view"><svg class="i"><use href="#i-db"/></svg>VIEW vw_produtos_estoque</span>
+            </div>
           </div>
-          <table id="venda-produtos"></table>
-        </div>
-        <div class="painel carrinho">
-          <h2>🛒 Carrinho</h2>
-          <label>Cliente
-            <select id="venda-cliente"></select>
-          </label>
-          <div id="venda-nivel" class="nivel-info"></div>
-          <table id="venda-carrinho"></table>
-          <div class="totais">
-            <div><span>Subtotal</span><strong id="venda-subtotal">R$ 0,00</strong></div>
-            <div class="desc"><span>Desconto fidelidade</span><strong id="venda-desconto">R$ 0,00</strong></div>
-            <div class="total"><span>Total</span><strong id="venda-total">R$ 0,00</strong></div>
+
+          <div class="kpis" id="dash-cards"></div>
+
+          <div class="dash-grid">
+            <div class="card span-2">
+              <div class="card-head">
+                <div>
+                  <h2>Faturamento diário</h2>
+                  <p>Vendas concluídas nos últimos 30 dias</p>
+                </div>
+                <div class="card-stat" id="dash-30d"></div>
+              </div>
+              <div class="chart" id="dash-chart"></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div><h2>Formas de pagamento</h2><p>Participação no faturamento</p></div></div>
+              <div id="dash-pagamento" class="hbars"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><div><h2>Mais vendidos</h2><p>Unidades vendidas</p></div></div>
+              <div id="dash-top" class="rank"></div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <div><h2>Alertas de estoque</h2><p>Produtos abaixo do mínimo</p></div>
+                <button class="link" data-ir="produtos">Ver estoque<svg class="i"><use href="#i-arrow"/></svg></button>
+              </div>
+              <div id="dash-alertas" class="list"></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div><h2>Por categoria</h2><p>Unidades vendidas e em estoque</p></div></div>
+              <div id="dash-categorias" class="cat-list"></div>
+            </div>
+
+            <div class="card span-3">
+              <div class="card-head">
+                <div><h2>Últimas vendas</h2><p>Movimento mais recente do caixa</p></div>
+                <button class="link" data-ir="relatorio">Ver relatório<svg class="i"><use href="#i-arrow"/></svg></button>
+              </div>
+              <div class="table-wrap"><table id="dash-ultimas"></table></div>
+            </div>
           </div>
-          <label>Forma de pagamento
-            <select id="venda-pagamento">
-              <option value="PIX">PIX</option>
-              <option value="CREDITO">Cartão de crédito</option>
-              <option value="DEBITO">Cartão de débito</option>
-              <option value="DINHEIRO">Dinheiro</option>
-            </select>
-          </label>
-          <button class="primario" id="venda-finalizar">Finalizar venda</button>
-        </div>
-      </div>
-    </section>
+        </section>
 
-    <!-- ================= RELATÓRIO ================= -->
-    <section id="tela-relatorio" class="tela">
-      <div class="titulo-tela">
-        <h1>Relatório de Vendas</h1>
-        <span class="recurso view">VIEW vw_relatorio_vendas</span>
-        <span class="recurso proc">PROCEDURE sp_cancelar_venda</span>
-      </div>
-      <div class="painel">
-        <div class="filtros">
-          <label>De <input type="date" id="rel-inicio"></label>
-          <label>Até <input type="date" id="rel-fim"></label>
-          <input id="rel-cliente" placeholder="Cliente...">
-          <select id="rel-status">
-            <option value="">Todos os status</option>
-            <option value="CONCLUIDA">Concluídas</option>
-            <option value="CANCELADA">Canceladas</option>
-          </select>
-          <button id="rel-filtrar">Filtrar</button>
-        </div>
-        <div class="cards pequenos" id="rel-resumo"></div>
-        <table id="rel-tabela"></table>
-      </div>
-    </section>
+        <!-- ================= NOVA VENDA ================= -->
+        <section id="tela-venda" class="tela">
+          <div class="page-head">
+            <div>
+              <h1>Nova venda</h1>
+              <p>Monte o pedido, escolha o cliente e finalize no caixa.</p>
+            </div>
+            <div class="db-chips">
+              <span class="db-chip proc"><svg class="i"><use href="#i-db"/></svg>PROCEDURE sp_realizar_venda</span>
+              <span class="db-chip func"><svg class="i"><use href="#i-db"/></svg>FUNCTION fn_calcular_desconto</span>
+              <span class="db-chip view"><svg class="i"><use href="#i-db"/></svg>VIEW vw_produtos_estoque</span>
+            </div>
+          </div>
 
-    <!-- ================= PRODUTOS ================= -->
-    <section id="tela-produtos" class="tela">
-      <div class="titulo-tela">
-        <h1>Produtos &amp; Estoque</h1>
-        <span class="recurso view">VIEW vw_produtos_estoque</span>
-        <span class="recurso proc">PROCEDURE sp_registrar_entrada_estoque</span>
-      </div>
-      <div class="painel">
-        <div class="filtros">
-          <input id="prod-busca" placeholder="Buscar...">
-          <select id="prod-categoria"><option value="">Todas as categorias</option></select>
-          <select id="prod-situacao">
-            <option value="">Qualquer situação</option>
-            <option value="OK">OK</option>
-            <option value="BAIXO">Estoque baixo</option>
-            <option value="ESGOTADO">Esgotado</option>
-          </select>
-          <button class="primario" id="prod-novo">+ Novo produto</button>
-        </div>
-        <table id="prod-tabela"></table>
-      </div>
-      <div class="painel">
-        <h2>Histórico de movimentações</h2>
-        <table id="prod-movimentacoes"></table>
-      </div>
-    </section>
+          <div class="pos">
+            <div class="pos-catalog">
+              <div class="toolbar">
+                <label class="search"><svg class="i"><use href="#i-search"/></svg><input id="venda-busca" placeholder="Buscar por produto ou plataforma…"></label>
+              </div>
+              <div class="chips" id="venda-categoria" data-valor=""></div>
+              <div class="product-grid" id="venda-produtos"></div>
+            </div>
 
-    <!-- ================= CLIENTES ================= -->
-    <section id="tela-clientes" class="tela">
-      <div class="titulo-tela">
-        <h1>Clientes</h1>
-        <span class="recurso func">FUNCTION fn_nivel_cliente</span>
-      </div>
-      <div class="painel">
-        <div class="filtros">
-          <span class="dica">Níveis: Bronze (0%) · Prata a partir de R$ 2.000 (5%) · Ouro a partir de R$ 5.000 (10%)</span>
-          <button class="primario" id="cli-novo">+ Novo cliente</button>
-        </div>
-        <table id="cli-tabela"></table>
-      </div>
-    </section>
-  </main>
+            <aside class="pos-cart card">
+              <div class="cart-head">
+                <h2><svg class="i"><use href="#i-bag"/></svg>Pedido atual <span class="count" id="venda-qtd">0</span></h2>
+                <button class="link danger" id="venda-limpar">Limpar</button>
+              </div>
 
-  <!-- Modal genérico -->
-  <dialog id="modal">
+              <label class="field">
+                <span>Cliente</span>
+                <select id="venda-cliente"></select>
+              </label>
+              <div id="venda-nivel"></div>
+
+              <div class="cart-items" id="venda-carrinho"></div>
+
+              <div class="totals">
+                <div><span>Subtotal</span><strong id="venda-subtotal">R$ 0,00</strong></div>
+                <div class="discount"><span>Desconto fidelidade <em id="venda-pct"></em></span><strong id="venda-desconto">- R$ 0,00</strong></div>
+                <div class="grand"><span>Total</span><strong id="venda-total">R$ 0,00</strong></div>
+              </div>
+
+              <div class="field">
+                <span>Forma de pagamento</span>
+                <div class="pay" id="venda-pagamento" data-valor="PIX">
+                  <button data-valor="PIX" class="ativo"><svg class="i"><use href="#i-pix"/></svg>PIX</button>
+                  <button data-valor="CREDITO"><svg class="i"><use href="#i-card"/></svg>Crédito</button>
+                  <button data-valor="DEBITO"><svg class="i"><use href="#i-wallet"/></svg>Débito</button>
+                  <button data-valor="DINHEIRO"><svg class="i"><use href="#i-cash"/></svg>Dinheiro</button>
+                </div>
+              </div>
+
+              <button class="btn primary xl" id="venda-finalizar"><svg class="i"><use href="#i-check"/></svg><span>Finalizar venda</span></button>
+            </aside>
+          </div>
+        </section>
+
+        <!-- ================= RELATÓRIO ================= -->
+        <section id="tela-relatorio" class="tela">
+          <div class="page-head">
+            <div>
+              <h1>Relatório de vendas</h1>
+              <p>Consulte, filtre e audite todas as vendas da loja.</p>
+            </div>
+            <div class="db-chips">
+              <span class="db-chip view"><svg class="i"><use href="#i-db"/></svg>VIEW vw_relatorio_vendas</span>
+              <span class="db-chip proc"><svg class="i"><use href="#i-db"/></svg>PROCEDURE sp_cancelar_venda</span>
+            </div>
+          </div>
+
+          <div class="filters card">
+            <label class="field inline"><span>De</span><input type="date" id="rel-inicio"></label>
+            <label class="field inline"><span>Até</span><input type="date" id="rel-fim"></label>
+            <label class="search"><svg class="i"><use href="#i-search"/></svg><input id="rel-cliente" placeholder="Buscar cliente…"></label>
+            <div class="segmented" id="rel-status" data-valor="">
+              <button data-valor="" class="ativo">Todas</button>
+              <button data-valor="CONCLUIDA">Concluídas</button>
+              <button data-valor="CANCELADA">Canceladas</button>
+            </div>
+            <button class="btn ghost" id="rel-limpar"><svg class="i"><use href="#i-refresh"/></svg>Limpar filtros</button>
+          </div>
+
+          <div class="kpis compact" id="rel-resumo"></div>
+
+          <div class="card flush">
+            <div class="table-wrap"><table id="rel-tabela"></table></div>
+          </div>
+        </section>
+
+        <!-- ================= PRODUTOS ================= -->
+        <section id="tela-produtos" class="tela">
+          <div class="page-head">
+            <div>
+              <h1>Produtos &amp; estoque</h1>
+              <p>Catálogo de consoles, jogos e peças com controle de estoque.</p>
+            </div>
+            <div class="head-right">
+              <div class="db-chips">
+                <span class="db-chip view"><svg class="i"><use href="#i-db"/></svg>VIEW vw_produtos_estoque</span>
+                <span class="db-chip proc"><svg class="i"><use href="#i-db"/></svg>PROCEDURE sp_registrar_entrada_estoque</span>
+              </div>
+              <button class="btn primary" id="prod-novo"><svg class="i"><use href="#i-plus"/></svg>Novo produto</button>
+            </div>
+          </div>
+
+          <div class="kpis compact" id="prod-resumo"></div>
+
+          <div class="filters card">
+            <label class="search"><svg class="i"><use href="#i-search"/></svg><input id="prod-busca" placeholder="Buscar produto ou plataforma…"></label>
+            <div class="chips" id="prod-categoria" data-valor=""></div>
+            <div class="segmented" id="prod-situacao" data-valor="">
+              <button data-valor="" class="ativo">Todos</button>
+              <button data-valor="OK">OK</button>
+              <button data-valor="BAIXO">Baixo</button>
+              <button data-valor="ESGOTADO">Esgotado</button>
+            </div>
+          </div>
+
+          <div class="split">
+            <div class="card flush">
+              <div class="table-wrap"><table id="prod-tabela"></table></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div><h2>Movimentações</h2><p>Entradas e saídas recentes</p></div></div>
+              <div class="feed" id="prod-movimentacoes"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= CLIENTES ================= -->
+        <section id="tela-clientes" class="tela">
+          <div class="page-head">
+            <div>
+              <h1>Clientes</h1>
+              <p>Programa de fidelidade ShopGame Rewards.</p>
+            </div>
+            <div class="head-right">
+              <div class="db-chips">
+                <span class="db-chip func"><svg class="i"><use href="#i-db"/></svg>FUNCTION fn_nivel_cliente</span>
+              </div>
+              <button class="btn primary" id="cli-novo"><svg class="i"><use href="#i-plus"/></svg>Novo cliente</button>
+            </div>
+          </div>
+
+          <div class="tiers" id="cli-tiers"></div>
+
+          <div class="filters card">
+            <label class="search"><svg class="i"><use href="#i-search"/></svg><input id="cli-busca" placeholder="Buscar por nome, CPF ou e-mail…"></label>
+          </div>
+
+          <div class="client-grid" id="cli-tabela"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal de formulário -->
+  <dialog id="modal" class="modal">
     <form method="dialog" id="modal-form">
-      <h2 id="modal-titulo"></h2>
+      <header>
+        <h2 id="modal-titulo"></h2>
+        <button value="cancelar" formnovalidate class="icon-btn" aria-label="Fechar"><svg class="i"><use href="#i-x"/></svg></button>
+      </header>
       <div id="modal-corpo"></div>
-      <div class="acoes">
-        <button value="cancelar" formnovalidate>Fechar</button>
-        <button value="ok" class="primario" id="modal-ok">Salvar</button>
-      </div>
+      <footer class="acoes">
+        <button value="cancelar" formnovalidate class="btn ghost">Cancelar</button>
+        <button value="ok" class="btn primary" id="modal-ok">Salvar</button>
+      </footer>
     </form>
   </dialog>
 
-  <div id="toast"></div>
+  <!-- Confirmação -->
+  <dialog id="confirm" class="modal small">
+    <form method="dialog">
+      <div class="confirm-icon" id="confirm-icone"></div>
+      <h2 id="confirm-titulo"></h2>
+      <p id="confirm-texto"></p>
+      <footer class="acoes">
+        <button value="nao" class="btn ghost">Voltar</button>
+        <button value="sim" class="btn danger" id="confirm-ok">Confirmar</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Painel lateral (detalhe da venda) -->
+  <dialog id="drawer" class="drawer">
+    <form method="dialog">
+      <header>
+        <div><span class="eyebrow" id="drawer-sub"></span><h2 id="drawer-titulo"></h2></div>
+        <button class="icon-btn" aria-label="Fechar"><svg class="i"><use href="#i-x"/></svg></button>
+      </header>
+      <div id="drawer-corpo"></div>
+    </form>
+  </dialog>
+
+  <!-- Venda concluída -->
+  <dialog id="sucesso" class="modal small success">
+    <form method="dialog">
+      <div class="success-mark"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg></div>
+      <h2 id="sucesso-titulo"></h2>
+      <div id="sucesso-corpo"></div>
+      <footer class="acoes">
+        <button value="relatorio" class="btn ghost">Ver no relatório</button>
+        <button value="nova" class="btn primary">Nova venda</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <div id="toasts"></div>
+  <div id="tooltip" class="tooltip" hidden></div>
   <script src="app.js"></script>
 </body>
 </html>

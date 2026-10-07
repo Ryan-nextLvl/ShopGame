@@ -46,9 +46,11 @@ public static class VendasEndpoints
             var venda = await ds.ConsultarAsync("SELECT * FROM vw_relatorio_vendas WHERE venda_id = $1", id);
             if (venda.Count == 0) return Results.NotFound(new { erro = "Venda não encontrada" });
             venda[0]["itens"] = await ds.ConsultarAsync(
-                @"SELECT p.nome, p.plataforma, i.quantidade, i.preco_unitario,
+                @"SELECT p.nome, p.plataforma, c.nome AS categoria, i.quantidade, i.preco_unitario,
                          i.quantidade * i.preco_unitario AS subtotal
-                    FROM itens_venda i JOIN produtos p ON p.id = i.produto_id
+                    FROM itens_venda i
+                    JOIN produtos p   ON p.id = i.produto_id
+                    JOIN categorias c ON c.id = p.categoria_id
                    WHERE i.venda_id = $1 ORDER BY i.id", id);
             return Results.Ok(venda[0]);
         });
