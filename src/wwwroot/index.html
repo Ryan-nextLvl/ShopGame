@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ShopGame — Loja de Games</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="marca">🎮 <strong>Shop</strong>Game</div>
+    <nav id="menu">
+      <button data-tela="dashboard" class="ativo">Dashboard</button>
+      <button data-tela="venda">Nova Venda</button>
+      <button data-tela="relatorio">Relatório de Vendas</button>
+      <button data-tela="produtos">Produtos &amp; Estoque</button>
+      <button data-tela="clientes">Clientes</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ================= DASHBOARD ================= -->
+    <section id="tela-dashboard" class="tela ativa">
+      <div class="titulo-tela">
+        <h1>Dashboard</h1>
+        <span class="recurso view">VIEW vw_relatorio_vendas + vw_produtos_estoque</span>
+      </div>
+      <div class="cards" id="dash-cards"></div>
+      <div class="grade-2">
+        <div class="painel"><h2>Mais vendidos</h2><table id="dash-top"></table></div>
+        <div class="painel"><h2>⚠ Alertas de estoque</h2><table id="dash-alertas"></table></div>
+        <div class="painel"><h2>Por categoria</h2><table id="dash-categorias"></table></div>
+        <div class="painel"><h2>Últimas vendas</h2><table id="dash-ultimas"></table></div>
+      </div>
+    </section>
+
+    <!-- ================= NOVA VENDA ================= -->
+    <section id="tela-venda" class="tela">
+      <div class="titulo-tela">
+        <h1>Nova Venda</h1>
+        <span class="recurso proc">PROCEDURE sp_realizar_venda</span>
+        <span class="recurso func">FUNCTION fn_calcular_desconto</span>
+      </div>
+      <div class="grade-venda">
+        <div class="painel">
+          <h2>Produtos</h2>
+          <div class="filtros">
+            <input id="venda-busca" placeholder="Buscar produto ou plataforma...">
+            <select id="venda-categoria"><option value="">Todas as categorias</option></select>
+          </div>
+          <table id="venda-produtos"></table>
+        </div>
+        <div class="painel carrinho">
+          <h2>🛒 Carrinho</h2>
+          <label>Cliente
+            <select id="venda-cliente"></select>
+          </label>
+          <div id="venda-nivel" class="nivel-info"></div>
+          <table id="venda-carrinho"></table>
+          <div class="totais">
+            <div><span>Subtotal</span><strong id="venda-subtotal">R$ 0,00</strong></div>
+            <div class="desc"><span>Desconto fidelidade</span><strong id="venda-desconto">R$ 0,00</strong></div>
+            <div class="total"><span>Total</span><strong id="venda-total">R$ 0,00</strong></div>
+          </div>
+          <label>Forma de pagamento
+            <select id="venda-pagamento">
+              <option value="PIX">PIX</option>
+              <option value="CREDITO">Cartão de crédito</option>
+              <option value="DEBITO">Cartão de débito</option>
+              <option value="DINHEIRO">Dinheiro</option>
+            </select>
+          </label>
+          <button class="primario" id="venda-finalizar">Finalizar venda</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= RELATÓRIO ================= -->
+    <section id="tela-relatorio" class="tela">
+      <div class="titulo-tela">
+        <h1>Relatório de Vendas</h1>
+        <span class="recurso view">VIEW vw_relatorio_vendas</span>
+        <span class="recurso proc">PROCEDURE sp_cancelar_venda</span>
+      </div>
+      <div class="painel">
+        <div class="filtros">
+          <label>De <input type="date" id="rel-inicio"></label>
+          <label>Até <input type="date" id="rel-fim"></label>
+          <input id="rel-cliente" placeholder="Cliente...">
+          <select id="rel-status">
+            <option value="">Todos os status</option>
+            <option value="CONCLUIDA">Concluídas</option>
+            <option value="CANCELADA">Canceladas</option>
+          </select>
+          <button id="rel-filtrar">Filtrar</button>
+        </div>
+        <div class="cards pequenos" id="rel-resumo"></div>
+        <table id="rel-tabela"></table>
+      </div>
+    </section>
+
+    <!-- ================= PRODUTOS ================= -->
+    <section id="tela-produtos" class="tela">
+      <div class="titulo-tela">
+        <h1>Produtos &amp; Estoque</h1>
+        <span class="recurso view">VIEW vw_produtos_estoque</span>
+        <span class="recurso proc">PROCEDURE sp_registrar_entrada_estoque</span>
+      </div>
+      <div class="painel">
+        <div class="filtros">
+          <input id="prod-busca" placeholder="Buscar...">
+          <select id="prod-categoria"><option value="">Todas as categorias</option></select>
+          <select id="prod-situacao">
+            <option value="">Qualquer situação</option>
+            <option value="OK">OK</option>
+            <option value="BAIXO">Estoque baixo</option>
+            <option value="ESGOTADO">Esgotado</option>
+          </select>
+          <button class="primario" id="prod-novo">+ Novo produto</button>
+        </div>
+        <table id="prod-tabela"></table>
+      </div>
+      <div class="painel">
+        <h2>Histórico de movimentações</h2>
+        <table id="prod-movimentacoes"></table>
+      </div>
+    </section>
+
+    <!-- ================= CLIENTES ================= -->
+    <section id="tela-clientes" class="tela">
+      <div class="titulo-tela">
+        <h1>Clientes</h1>
+        <span class="recurso func">FUNCTION fn_nivel_cliente</span>
+      </div>
+      <div class="painel">
+        <div class="filtros">
+          <span class="dica">Níveis: Bronze (0%) · Prata a partir de R$ 2.000 (5%) · Ouro a partir de R$ 5.000 (10%)</span>
+          <button class="primario" id="cli-novo">+ Novo cliente</button>
+        </div>
+        <table id="cli-tabela"></table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal genérico -->
+  <dialog id="modal">
+    <form method="dialog" id="modal-form">
+      <h2 id="modal-titulo"></h2>
+      <div id="modal-corpo"></div>
+      <div class="acoes">
+        <button value="cancelar" formnovalidate>Fechar</button>
+        <button value="ok" class="primario" id="modal-ok">Salvar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
