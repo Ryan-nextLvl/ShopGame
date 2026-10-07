@@ -201,12 +201,19 @@ function confirmar({ titulo, texto, botao = 'Confirmar', icone = 'alert' }) {
 
 // ================= Navegação =================
 const carregadores = {};
-const TITULOS = { dashboard: 'Dashboard', venda: 'Nova venda', relatorio: 'Relatório de vendas', produtos: 'Produtos & estoque', clientes: 'Clientes' };
+const TITULOS = { dashboard: 'Início', venda: 'Nova venda', relatorio: 'Relatório de vendas', produtos: 'Produtos & estoque', clientes: 'Clientes' };
 
 function irPara(tela) {
-  document.querySelectorAll('#menu button').forEach((b) => b.classList.toggle('ativo', b.dataset.tela === tela));
+  document.querySelectorAll('#menu button').forEach((b) => {
+    const ativo = b.dataset.tela === tela;
+    b.classList.toggle('ativo', ativo);
+    ativo ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current');
+  });
   document.querySelectorAll('.tela').forEach((t) => t.classList.toggle('ativa', t.id === `tela-${tela}`));
   $('#crumb-atual').textContent = TITULOS[tela];
+  document.title = `${TITULOS[tela]} · ShopGame`;
+  // URL própria por tela: botão Voltar funciona e a tela pode ser favoritada
+  if (location.hash !== '#' + tela) history.pushState(null, '', '#' + tela);
   fecharMenu();
   window.scrollTo({ top: 0 });
   carregadores[tela]().catch(erro);
@@ -214,12 +221,37 @@ function irPara(tela) {
 document.querySelectorAll('#menu button').forEach((b) => b.addEventListener('click', () => irPara(b.dataset.tela)));
 document.addEventListener('click', (e) => {
   const alvo = e.target.closest('[data-ir]');
-  if (alvo) irPara(alvo.dataset.ir);
+  if (!alvo) return;
+  e.preventDefault();
+  irPara(alvo.dataset.ir);
 });
 
-const fecharMenu = () => [$('#sidebar'), $('#backdrop')].forEach((el) => el.classList.remove('aberta'));
-$('#menu-btn').addEventListener('click', () => [$('#sidebar'), $('#backdrop')].forEach((el) => el.classList.add('aberta')));
+function fecharMenu() {
+  [$('#sidebar'), $('#backdrop')].forEach((el) => el.classList.remove('aberta'));
+  $('#menu-btn').setAttribute('aria-expanded', 'false');
+}
+$('#menu-btn').addEventListener('click', () => {
+  [$('#sidebar'), $('#backdrop')].forEach((el) => el.classList.add('aberta'));
+  $('#menu-btn').setAttribute('aria-expanded', 'true');
+  $('#menu button.ativo')?.focus();
+});
 $('#backdrop').addEventListener('click', fecharMenu);
+
+// Atalhos: "/" foca a busca da tela atual; Esc fecha o menu do celular
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') fecharMenu();
+  if (e.key !== '/' || e.target.closest('input, select, textarea, dialog')) return;
+  const busca = document.querySelector('.tela.ativa .search input');
+  if (busca) {
+    e.preventDefault();
+    busca.focus();
+  }
+});
+
+// Cabeçalho ganha fundo sólido + blur ao rolar (como em lojas de games)
+const marcarRolagem = () => document.body.classList.toggle('rolou', window.scrollY > 8);
+window.addEventListener('scroll', marcarRolagem, { passive: true });
+marcarRolagem();
 
 $('#hoje').textContent = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' });
 
@@ -484,6 +516,10 @@ $('#venda-carrinho').addEventListener('click', (e) => {
 async function atualizarCarrinho() {
   const unidades = carrinho.reduce((s, i) => s + i.quantidade, 0);
   $('#venda-qtd').textContent = unidades;
+  // Status do sistema sempre visível: itens no carrinho aparecem no cabeçalho
+  const badge = $('#top-carrinho');
+  badge.hidden = !unidades;
+  badge.textContent = unidades;
   $('#venda-carrinho').innerHTML = carrinho.length
     ? carrinho
         .map((i) => `<div class="cart-item">
@@ -689,6 +725,8 @@ carregadores.produtos = async () => {
   produtos = filtrados;
 
   const alertas = todos.filter((p) => p.situacao_estoque !== 'OK').length;
+  $('#nav-alertas').hidden = !alertas;
+  $('#nav-alertas').textContent = alertas;
   $('#prod-resumo').innerHTML = [
     kpi({ label: 'Produtos ativos', valor: num(todos.length), icone: 'box' }),
     kpi({ label: 'Unidades em estoque', valor: num(todos.reduce((s, p) => s + p.estoque, 0)), icone: 'grid', tom: 'var(--cyan)', suave: 'rgba(34,211,238,.12)' }),
@@ -886,4 +924,7 @@ async function excluirCliente(id) {
 }
 
 // ================= Início =================
-carregarCategorias().then(carregadores.dashboard).catch(erro);
+const telaDaUrl = () => (TITULOS[location.hash.slice(1)] ? location.hash.slice(1) : 'dashboard');
+window.addEventListener('popstate', () => irPara(telaDaUrl()));
+history.replaceState(null, '', '#' + telaDaUrl());
+carregarCategorias().then(() => irPara(telaDaUrl())).catch(erro);
