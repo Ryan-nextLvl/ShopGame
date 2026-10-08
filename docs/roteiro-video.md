@@ -15,7 +15,7 @@
 ---
 
 ## 1. Abertura — 0:00 a 1:00
-**Tela:** Dashboard
+**Tela:** Início
 
 > "Olá, meu nome é Ryan Porto Antunes. Este é o meu trabalho da disciplina Projeto de Banco de Dados, do professor Anderson Soares.
 > O sistema se chama **ShopGame**: um sistema de gestão para uma loja de games, que vende **consoles, jogos e peças e acessórios**.
@@ -28,11 +28,11 @@
 ---
 
 ## 2. Tour pelas telas — 1:00 a 3:00
-Clique em cada item do menu lateral enquanto fala. **Aponte para as etiquetas coloridas no topo de cada tela**: elas mostram qual recurso do banco a tela usa.
+Clique em cada item do menu do topo enquanto fala. **Aponte para as etiquetas coloridas de cada tela** (VIEW em azul, FUNCTION em amarelo, PROCEDURE em rosa): elas mostram qual recurso do banco a tela usa.
 
-**Dashboard**
-> "No Dashboard eu tenho o faturamento, o número de vendas, o ticket médio e o total de descontos. Tem o gráfico de faturamento dos últimos 30 dias (*passe o mouse em uma barra*), as formas de pagamento, os mais vendidos e os alertas de estoque.
-> Repare na etiqueta azul no topo: tudo isso vem das duas **Views**, `vw_relatorio_vendas` e `vw_produtos_estoque`."
+**Início**
+> "Na tela inicial eu tenho o faturamento, o número de vendas, o ticket médio e o total de descontos. Tem o gráfico de faturamento dos últimos 30 dias (*passe o mouse em uma barra*), as formas de pagamento, os mais vendidos e os alertas de estoque.
+> Repare nas etiquetas azuis no banner: tudo isso vem das duas **Views**, `vw_relatorio_vendas` e `vw_produtos_estoque`."
 
 **Nova Venda**
 > "Essa é a tela de caixa. Os produtos aparecem em cards, separados por categoria: consoles, jogos e peças. O Cooler aparece apagado porque está esgotado.
@@ -58,14 +58,14 @@ Clique em cada item do menu lateral enquanto fala. **Aponte para as etiquetas co
 
 **Mostre o uso no código:** `src/Endpoints/VendasEndpoints.cs`, linha 40
 
-> "No C#, a tela de relatório faz só `SELECT * FROM vw_relatorio_vendas` com os filtros. O Dashboard usa a mesma View para calcular o faturamento e o gráfico."
+> "No C#, a tela de relatório faz só `SELECT * FROM vw_relatorio_vendas` com os filtros. A tela inicial usa a mesma View para calcular o faturamento e o gráfico."
 
 **pgAdmin:**
 ```sql
 SELECT * FROM vw_relatorio_vendas ORDER BY data_venda DESC;
 SELECT nome, estoque, situacao_estoque FROM vw_produtos_estoque WHERE situacao_estoque <> 'OK';
 ```
-> "Também tenho a `vw_produtos_estoque`, que já calcula se o produto está OK, BAIXO ou ESGOTADO. É ela que gera os alertas do Dashboard."
+> "Também tenho a `vw_produtos_estoque`, que já calcula se o produto está OK, BAIXO ou ESGOTADO. É ela que gera os alertas da tela inicial."
 
 ---
 
@@ -137,8 +137,8 @@ CALL sp_realizar_venda(1, 'PIX', '[{"produto_id": 18, "quantidade": 1}]');
 
 **④ Procedure de entrada de estoque**
 10. No **Cooler para PS4/PS5** (esgotado), clique no **caminhãozinho** → quantidade **10** → **Registrar entrada**
-    > "A `sp_registrar_entrada_estoque` somou 10 unidades e registrou a entrada. O Cooler saiu de **Esgotado** para **Em estoque**, e o alerta sumiu do Dashboard."
-11. **Dashboard** → mostre que o número de alertas caiu.
+    > "A `sp_registrar_entrada_estoque` somou 10 unidades e registrou a entrada. O Cooler saiu de **Esgotado** para **Em estoque**, e o alerta sumiu da tela inicial."
+11. Repare que o número vermelho de alertas ao lado de **Produtos & estoque**, no menu, caiu de 3 para 2.
 
 ---
 
