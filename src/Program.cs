@@ -46,7 +46,11 @@ app.Use(async (ctx, next) =>
 });
 
 app.UseDefaultFiles();
-app.UseStaticFiles();
+// "no-cache": o navegador sempre confere se as telas mudaram, evitando CSS/JS antigos em cache
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx => ctx.Context.Response.Headers.CacheControl = "no-cache",
+});
 
 app.MapProdutos();
 app.MapClientes();
