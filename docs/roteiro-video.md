@@ -1,156 +1,216 @@
-# 🎬 Roteiro do vídeo — ShopGame (≈ 10 min)
+# Roteiro do vídeo — ShopGame (≈ 9 min)
 
-## Antes de gravar (checklist)
-- [ ] Na pasta `src`, rode `dotnet run -- --setup-db` (banco limpo: 24 vendas, a próxima será a **#25**) e depois `dotnet run`
-- [ ] Navegador aberto em **http://localhost:5000**, em tela cheia (F11) e com zoom de 100%
-- [ ] VS Code aberto na pasta do projeto, com estas abas já abertas:
-  `database/views/01_vw_relatorio_vendas.sql` · `database/functions/02_fn_calcular_desconto.sql` ·
-  `database/procedures/01_sp_realizar_venda.sql` · `src/Endpoints/VendasEndpoints.cs` · `src/Endpoints/ClientesEndpoints.cs`
-- [ ] pgAdmin aberto no banco **shopgame** com o Query Tool pronto
-- [ ] Notificações do Windows desligadas (modo "Não incomodar")
-
-> Dados de teste que o roteiro usa: **Fernanda Rocha** é BRONZE e faltam **R$ 20,80** para virar PRATA ·
-> **Ana Beatriz Souza** é OURO (10%) · **PlayStation 5** tem 8 unidades · **Cooler para PS4/PS5** está ESGOTADO.
+> **Formato:** cada bloco tem 🎬 **TELA** (o que mostrar) e 🎙️ **FALA** (o que dizer).
+> Não precisa ler palavra por palavra — use como guia e fale do seu jeito.
 
 ---
 
-## 1. Abertura — 0:00 a 1:00
-**Tela:** Início
+## ✅ Antes de apertar o REC
 
-> "Olá, meu nome é Ryan Porto Antunes. Este é o meu trabalho da disciplina Projeto de Banco de Dados, do professor Anderson Soares.
-> O sistema se chama **ShopGame**: um sistema de gestão para uma loja de games, que vende **consoles, jogos e peças e acessórios**.
+1. Dentro de `src/`: `dotnet run -- --setup-db` (banco zerado, dados de teste conhecidos) e depois `dotnet run`.
+2. Deixe abertos em abas/janelas:
+   - Navegador em `http://localhost:5000` (tela **Início**)
+   - VS Code com as pastas `database/` e `src/Endpoints/` expandidas
+   - pgAdmin (Query Tool no banco `shopgame`) ou terminal com `psql -U postgres -d shopgame`
+3. Zoom do navegador e do editor em **125%** pra ficar legível no vídeo.
+4. Feche WhatsApp/Discord (notificação no meio da gravação é triste).
+
+**Dados que a demo usa (com o banco recém-criado):**
+
+| O quê | Valor esperado |
+|---|---|
+| Estoque do **PlayStation 5 Slim 1TB** | 8 unidades |
+| **Cooler para PS4 / PS5** | 0 → ESGOTADO |
+| **Ana Beatriz Souza** | nível **OURO** (10% de desconto) |
+| **João Pedro Alves** | nível **BRONZE** (0% de desconto) |
+
+---
+
+## 1. Abertura (≈ 40 s)
+
+🎬 **TELA:** tela Início (Dashboard) do ShopGame.
+
+🎙️ **FALA:**
+> "Olá, professor Anderson. Eu sou o Ryan Porto Antunes, e esse é o meu trabalho de Projeto de Banco de Dados: o **ShopGame**, um sistema para uma loja de games que vende consoles, jogos e peças e acessórios.
 >
-> O problema que ele resolve é o do dia a dia de uma loja: vender um produto que já acabou no estoque, perder o histórico do que entrou e saiu, não saber quanto faturou e não ter um programa de fidelidade para os clientes.
+> O problema que ele resolve é o dia a dia de uma loja assim: vender um produto que já acabou no estoque, não ter histórico do que entrou e saiu, e não saber direito quanto se faturou. O sistema cuida de vendas, estoque, clientes com programa de fidelidade e relatórios.
 >
-> Ele foi feito em **C# com ASP.NET Core** no back-end, **PostgreSQL** como banco de dados e **HTML, CSS e JavaScript** nas telas.
-> A parte principal do trabalho é que as regras importantes ficam **dentro do banco**, em Views, Functions e Procedures, e as telas usam esses recursos de verdade."
+> Fiz em **C# com ASP.NET Core** no back-end, **PostgreSQL** no banco e **HTML, CSS e JavaScript** nas telas. E a regra de negócio mais importante fica dentro do banco, em **Views, Functions e Procedures** — que é o que vou mostrar."
 
 ---
 
-## 2. Tour pelas telas — 1:00 a 3:00
-Clique em cada item do menu do topo enquanto fala. **Aponte para as etiquetas coloridas de cada tela** (VIEW em azul, FUNCTION em amarelo, PROCEDURE em rosa): elas mostram qual recurso do banco a tela usa.
+## 2. Tour rápido pelas telas (≈ 1 min 30)
 
-**Início**
-> "Na tela inicial eu tenho o faturamento, o número de vendas, o ticket médio e o total de descontos. Tem o gráfico de faturamento dos últimos 30 dias (*passe o mouse em uma barra*), as formas de pagamento, os mais vendidos e os alertas de estoque.
-> Repare nas etiquetas azuis no banner: tudo isso vem das duas **Views**, `vw_relatorio_vendas` e `vw_produtos_estoque`."
+🎬 **TELA:** clique em cada aba do menu, sem demorar.
 
-**Nova Venda**
-> "Essa é a tela de caixa. Os produtos aparecem em cards, separados por categoria: consoles, jogos e peças. O Cooler aparece apagado porque está esgotado.
-> Aqui a etiqueta mostra a **Procedure** `sp_realizar_venda` e a **Function** `fn_calcular_desconto`."
-
-**Relatório de Vendas**
-> "No relatório eu filtro por período, cliente e status (*clique em 'Concluídas'*). O botão do olho abre os detalhes (*abra uma venda*), e o outro botão cancela a venda usando a **Procedure** `sp_cancelar_venda`."
-
-**Produtos & Estoque**
-> "Aqui ficam o catálogo e o estoque, com a situação de cada produto: em estoque, estoque baixo ou esgotado. Tem também o histórico de entradas e saídas. A lista vem da **View** `vw_produtos_estoque`, e o botão do caminhãozinho dá entrada de mercadoria pela **Procedure** `sp_registrar_entrada_estoque`."
-
-**Clientes**
-> "E aqui estão os clientes, com o programa de fidelidade: **Bronze** sem desconto, **Prata** com 5% a partir de 2 mil reais em compras e **Ouro** com 10% a partir de 5 mil. Esse nível é calculado pela **Function** `fn_nivel_cliente`."
+🎙️ **FALA:**
+> "O sistema tem cinco telas.
+>
+> **Início** é o dashboard: faturamento, ticket médio, descontos, mais vendidos, alertas de estoque e vendas por categoria.
+>
+> **Nova Venda** é o caixa: vitrine de produtos de um lado e o carrinho do outro.
+>
+> **Relatório de Vendas** lista todas as vendas com filtro por período, cliente e status, e permite ver detalhes e cancelar.
+>
+> **Produtos & Estoque** tem o cadastro completo — criar, editar, excluir — a situação do estoque e o histórico de entradas e saídas.
+>
+> E **Clientes**, com cadastro e o nível de fidelidade: Bronze, Prata e Ouro.
+>
+> Agora vou mostrar o que está por trás disso no banco."
 
 ---
 
-## 3. View — 3:00 a 4:30
-**Tela:** VS Code → `database/views/01_vw_relatorio_vendas.sql`
+## 3. A View (≈ 1 min 30)
 
-> "A primeira View é a `vw_relatorio_vendas`.
-> **Por que eu criei:** para montar o relatório eu preciso juntar três tabelas, **vendas, clientes e itens_venda**, e somar a quantidade de itens. Em vez de repetir esse JOIN com GROUP BY em todo lugar, ele fica salvo no banco.
-> **O que ela retorna:** o número da venda, a data, o cliente, o CPF, a forma de pagamento, a quantidade de itens, o subtotal, o desconto, o total e o status."
+🎬 **TELA:** abra `database/views/01_vw_relatorio_vendas.sql`.
 
-**Mostre o uso no código:** `src/Endpoints/VendasEndpoints.cs`, linha 40
+🎙️ **FALA:**
+> "Começando pela **View**. A principal é a `vw_relatorio_vendas`.
+>
+> Pra montar o relatório eu preciso juntar três tabelas: **vendas**, **clientes** e **itens_venda**. Em vez de repetir esse JOIN com GROUP BY em todo lugar da aplicação, eu deixei isso salvo numa view.
+>
+> Ela devolve, por venda: o número, a data, o cliente e o CPF, a forma de pagamento, quantos itens e unidades, subtotal, desconto, total e o status — concluída ou cancelada."
 
-> "No C#, a tela de relatório faz só `SELECT * FROM vw_relatorio_vendas` com os filtros. A tela inicial usa a mesma View para calcular o faturamento e o gráfico."
+🎬 **TELA:** abra `src/Endpoints/VendasEndpoints.cs` e destaque a linha `SELECT * FROM vw_relatorio_vendas`.
 
-**pgAdmin:**
+🎙️ **FALA:**
+> "Aqui no C#, a rota do relatório só faz um `SELECT` na view, com os filtros da tela. A mesma view alimenta o Dashboard."
+
+🎬 **TELA:** no pgAdmin/psql, rode:
 ```sql
-SELECT * FROM vw_relatorio_vendas ORDER BY data_venda DESC;
-SELECT nome, estoque, situacao_estoque FROM vw_produtos_estoque WHERE situacao_estoque <> 'OK';
-```
-> "Também tenho a `vw_produtos_estoque`, que já calcula se o produto está OK, BAIXO ou ESGOTADO. É ela que gera os alertas da tela inicial."
-
----
-
-## 4. Function — 4:30 a 6:00
-**Tela:** VS Code → `database/functions/02_fn_calcular_desconto.sql` (mostre também a `01_fn_nivel_cliente.sql`)
-
-> "A Function `fn_calcular_desconto` recebe **dois parâmetros**: o id do cliente e o subtotal da compra.
-> Ela chama outra function, a `fn_nivel_cliente`, que soma tudo o que o cliente já gastou em vendas concluídas e devolve BRONZE, PRATA ou OURO. Com o nível em mãos, ela **retorna o valor do desconto em reais**: 0%, 5% ou 10%."
-
-**pgAdmin:**
-```sql
-SELECT nome, fn_nivel_cliente(id) AS nivel FROM clientes;
-SELECT fn_calcular_desconto(1, 1000);   -- Ana é OURO → retorna 100.00
+SELECT * FROM vw_relatorio_vendas;
 ```
 
-**Mostre o uso no código:** `src/Endpoints/ClientesEndpoints.cs`, linha 26
-
-> "Na aplicação, quando eu escolho o cliente na tela de venda, o C# chama essa function para mostrar o desconto **antes** de finalizar. E a procedure de venda usa a mesma function para gravar o valor. Assim a regra fica num lugar só."
+🎙️ **FALA:**
+> "E rodando direto no banco, é exatamente o que aparece na tela de Relatório.
+>
+> Tem uma segunda view, a `vw_produtos_estoque`, que calcula a situação do estoque — OK, BAIXO ou ESGOTADO — comparando o estoque com o estoque mínimo. É ela que alimenta a tela de Produtos e os alertas do Dashboard."
 
 ---
 
-## 5. Procedure — 6:00 a 7:30
-**Tela:** VS Code → `database/procedures/01_sp_realizar_venda.sql`
+## 4. A Function (≈ 1 min 30)
 
-> "A Procedure principal é a `sp_realizar_venda`. Ela recebe o **cliente**, a **forma de pagamento** e a **lista de itens em JSON**, e devolve o **número da venda** num parâmetro INOUT.
-> As operações, nesta ordem: valida o cliente e os itens, cria a venda e, para cada produto,
-> trava a linha com `FOR UPDATE` para duas vendas ao mesmo tempo não venderem o mesmo estoque,
-> confere se tem estoque, grava o item, **baixa o estoque** e registra a **movimentação de saída**.
-> No final ela chama a `fn_calcular_desconto` e grava subtotal, desconto e total.
-> Tudo isso é **uma transação só**: se qualquer item der erro, nada é gravado."
+🎬 **TELA:** abra `database/functions/01_fn_nivel_cliente.sql` e depois `02_fn_calcular_desconto.sql`.
 
-**Mostre o uso no código:** `src/Endpoints/VendasEndpoints.cs`, linha 65
+🎙️ **FALA:**
+> "Agora as **Functions**, que fazem o programa de fidelidade.
+>
+> A `fn_nivel_cliente` recebe o **id do cliente**, soma o total das vendas concluídas dele e **retorna o nível**: a partir de 2 mil reais é Prata, a partir de 5 mil é Ouro, abaixo disso é Bronze.
+>
+> A `fn_calcular_desconto` recebe o **id do cliente e o subtotal da compra**, chama a função de nível e **retorna o valor do desconto em reais**: Bronze zero, Prata 5%, Ouro 10%."
 
-> "O botão **Finalizar venda** chama a API, e a API executa `CALL sp_realizar_venda`."
+🎬 **TELA:** abra `src/Endpoints/ClientesEndpoints.cs` e destaque `fn_nivel_cliente(...)` e `fn_calcular_desconto(...)`.
 
-**pgAdmin: mostre a proteção funcionando**
+🎙️ **FALA:**
+> "No C#, a tela de Clientes usa a `fn_nivel_cliente` pra mostrar o selo de cada cliente, e a tela de Nova Venda usa a `fn_calcular_desconto` pra mostrar a prévia do desconto assim que eu escolho o cliente."
+
+🎬 **TELA:** no pgAdmin/psql, rode:
 ```sql
-CALL sp_realizar_venda(1, 'PIX', '[{"produto_id": 18, "quantidade": 1}]');
+SELECT fn_nivel_cliente(1) AS nivel_ana,
+       fn_calcular_desconto(1, 1000) AS desconto_ana,
+       fn_nivel_cliente(4) AS nivel_joao,
+       fn_calcular_desconto(4, 1000) AS desconto_joao;
 ```
-> "Se eu tentar vender o Cooler, que está com estoque zero, a própria procedure barra: 'Estoque insuficiente'. E nada foi gravado."
 
-> "Tenho ainda mais duas procedures: a `sp_registrar_entrada_estoque` e a `sp_cancelar_venda`, que devolve os itens ao estoque. Vou mostrar as duas funcionando agora."
-
----
-
-## 6. Funcionamento integrado — 7:30 a 9:30
-*Tela da aplicação → chamada ao banco → View/Function/Procedure → resultado na tela.*
-
-**① Venda com a Function e a Procedure**
-1. **Produtos & Estoque** → *"O PlayStation 5 está com **8** unidades."*
-2. **Nova Venda** → escolha o cliente **Fernanda Rocha**
-   > "A Fernanda é **Bronze**, então não tem desconto. E o sistema mostra que faltam **R$ 20,80** para ela virar Prata. Isso vem da function."
-3. Adicione **God of War Ragnarök** → pagamento **PIX** → **Finalizar venda**
-   > "A procedure registrou a venda **#25**."
-4. **Nova venda** → escolha a **Fernanda** de novo
-   > "Olha só: como ela passou de 2 mil reais em compras, a function já recalculou o nível. Agora ela é **Prata** e ganha **5% de desconto**."
-5. Adicione o **PlayStation 5** → **Finalizar**
-   > "Venda **#26**, com 5% de desconto aplicado pelo banco."
-
-**② View mostrando o resultado**
-6. **Relatório de Vendas** → as vendas #26 e #25 aparecem no topo → abra a **#26** no olho
-   > "O relatório, que vem da View, já mostra a venda com o desconto gravado."
-7. **Produtos & Estoque** → *"O PS5 foi de 8 para **7**, e o histórico mostra a saída 'Venda #26'."*
-
-**③ Procedure de cancelamento**
-8. **Relatório** → clique em **Cancelar** na #26 → confirme
-   > "A `sp_cancelar_venda` marcou a venda como cancelada e devolveu o PS5 para o estoque."
-9. **Produtos & Estoque** → *"O PS5 voltou para **8**, com uma entrada 'Cancelamento da venda #26'."*
-
-**④ Procedure de entrada de estoque**
-10. No **Cooler para PS4/PS5** (esgotado), clique no **caminhãozinho** → quantidade **10** → **Registrar entrada**
-    > "A `sp_registrar_entrada_estoque` somou 10 unidades e registrou a entrada. O Cooler saiu de **Esgotado** para **Em estoque**, e o alerta sumiu da tela inicial."
-11. Repare que o número vermelho de alertas ao lado de **Produtos & estoque**, no menu, caiu de 3 para 2.
+🎙️ **FALA:**
+> "Testando direto: a Ana é Ouro, então numa compra de mil reais ela ganha cem de desconto. O João é Bronze e não ganha nada."
 
 ---
 
-## 7. Encerramento — 9:30 a 10:00
-> "Resumindo: o ShopGame usa **duas Views** para os relatórios e o dashboard, **duas Functions** para o programa de fidelidade e **três Procedures** para vender, cancelar e dar entrada no estoque.
-> Todas elas são chamadas pelas telas, ou seja, o banco não serve só para guardar dados: ele também processa as regras do negócio.
-> O código e os scripts para recriar o banco estão no GitHub, no link da descrição. Obrigado!"
+## 5. A Procedure (≈ 2 min)
+
+🎬 **TELA:** abra `database/procedures/01_sp_realizar_venda.sql`. Vá rolando devagar conforme fala.
+
+🎙️ **FALA:**
+> "E a parte principal: a **Procedure** `sp_realizar_venda`. Ela registra uma venda inteira de uma vez só.
+>
+> Recebe o **cliente**, a **forma de pagamento**, a **lista de itens em JSON** — produto e quantidade — e devolve o **id da venda criada** pelo parâmetro `INOUT`.
+>
+> O passo a passo é:
+> primeiro valida se o cliente existe e se tem pelo menos um item;
+> cria o cabeçalho da venda;
+> pra cada item, busca o produto com `FOR UPDATE` — isso trava a linha pra duas vendas ao mesmo tempo não venderem o mesmo estoque;
+> confere se tem estoque suficiente, e se não tiver, dá erro;
+> insere o item, baixa o estoque e grava a movimentação de **saída**;
+> no final, chama a `fn_calcular_desconto` e grava subtotal, desconto e total.
+>
+> Como é tudo uma transação só, se qualquer coisa der errado no meio, **nada é gravado**."
+
+🎬 **TELA:** abra `src/Endpoints/VendasEndpoints.cs` e destaque `CALL sp_realizar_venda($1, $2, $3, NULL)`.
+
+🎙️ **FALA:**
+> "Na aplicação, o botão **Finalizar venda** chama essa rota, que executa o `CALL` da procedure e pega o id da venda de volta.
+>
+> Além dela, tem mais duas: a `sp_registrar_entrada_estoque`, usada quando chega mercadoria, e a `sp_cancelar_venda`, que cancela a venda e devolve os itens pro estoque."
 
 ---
 
-### Dicas de gravação
-- **Ferramentas:** OBS Studio, ou a Xbox Game Bar (`Win + G`) / Ferramenta de Captura (`Win + Shift + S` → vídeo)
-- **Ritmo:** fale devagar e mova o mouse até o que você está explicando antes de falar sobre ele
-- **Se errar:** pause, respire e repita a frase. Depois é só cortar no editor (o Clipchamp já vem no Windows)
-- **Publicação:** suba no YouTube como **"Não listado"** e coloque o link no README
+## 6. Tudo funcionando junto (≈ 2 min)
+
+> Essa é a parte mais importante do vídeo. Vá com calma.
+
+🎬 **TELA:** aba **Produtos & Estoque** → busque "PlayStation 5".
+
+🎙️ **FALA:**
+> "Agora mostrando tudo integrado. O PlayStation 5 tem **8 unidades** em estoque."
+
+🎬 **TELA:** aba **Nova Venda** → clique no PS5 e em um jogo (ex.: **God of War Ragnarök**) → escolha o cliente **João Pedro Alves**.
+
+🎙️ **FALA:**
+> "Vou montar um pedido com um PS5 e um God of War. Se eu escolho o João, que é Bronze, o desconto é zero…"
+
+🎬 **TELA:** troque o cliente para **Ana Beatriz Souza**.
+
+🎙️ **FALA:**
+> "…e se troco pra Ana, que é Ouro, aparece 10% de desconto na hora. Isso é a **function** sendo chamada pela tela."
+
+🎬 **TELA:** escolha **PIX** → **Finalizar venda** → mostre o recibo.
+
+🎙️ **FALA:**
+> "Finalizando, a **procedure** registra a venda, e o recibo já mostra o número e o total com desconto."
+
+🎬 **TELA:** aba **Relatório de Vendas** → a venda nova no topo → clique em 👁 **Ver detalhes**.
+
+🎙️ **FALA:**
+> "No relatório, que vem da **view**, a venda já aparece, com o desconto gravado."
+
+🎬 **TELA:** aba **Produtos & Estoque** → PS5 agora com **7** → mostre no card **Movimentações** a SAÍDA "Venda #N".
+
+🎙️ **FALA:**
+> "E o estoque do PS5 caiu de 8 pra 7, com a saída registrada no histórico com o número da venda."
+
+🎬 **TELA:** aba **Nova Venda** → mostre o **Cooler para PS4 / PS5** desabilitado (esgotado). Tente aumentar a quantidade do PS5 no carrinho acima do estoque.
+
+🎙️ **FALA:**
+> "Produto esgotado nem dá pra adicionar, e a tela não deixa passar do estoque. E mesmo que alguém tentasse forçar isso pela API, a procedure barra com erro de estoque insuficiente e não grava nada."
+
+🎬 **TELA:** **Relatório de Vendas** → na venda criada, clique em ⊘ **Cancelar venda** → confirme. Volte em **Produtos & Estoque**.
+
+🎙️ **FALA:**
+> "Se eu cancelo essa venda, a `sp_cancelar_venda` muda o status pra **cancelada** e devolve os itens: o PS5 voltou pra 8. E a venda não é apagada, fica no histórico pra auditoria."
+
+🎬 **TELA:** **Produtos & Estoque** → no **Cooler**, clique em 🚚 **Entrada de estoque** → quantidade **10**, motivo "NF 1234" → salvar.
+
+🎙️ **FALA:**
+> "Por último, chegou mercadoria do cooler: registro uma entrada de 10 unidades. A `sp_registrar_entrada_estoque` soma no estoque, grava a entrada, e a situação sai de **esgotado** pra **OK**."
+
+---
+
+## 7. Encerramento (≈ 30 s)
+
+🎬 **TELA:** volte pro Dashboard (ou mostre o README no GitHub).
+
+🎙️ **FALA:**
+> "Resumindo o fluxo: a **tela** em JavaScript chama a **API em C#**, que usa a **View**, a **Function** e a **Procedure** no **PostgreSQL**, e o resultado volta pra tela.
+>
+> A view centraliza o relatório, a function calcula a fidelidade e o desconto, e a procedure garante que a venda e o estoque fiquem sempre consistentes.
+>
+> O código, os scripts do banco e as instruções pra rodar estão no repositório do GitHub. Obrigado!"
+
+---
+
+## 🆘 Se algo der errado na gravação
+
+- **Números diferentes do esperado?** Você testou antes de gravar. Rode `dotnet run -- --setup-db` de novo e reinicie com `dotnet run`.
+- **Travou numa fala?** Pausa 2 segundos e repete a frase inteira — fica fácil de cortar na edição.
+- **Ficou longo?** Dá pra cortar a segunda view (fim do bloco 3) e as procedures extras (fim do bloco 5); a demo do bloco 6 já mostra as duas funcionando.
